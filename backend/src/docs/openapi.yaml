@@ -1,0 +1,23 @@
+openapi: 3.0.0
+
+# Informações básicas sobre a API, como título, versão e descrição
+info:
+  title: MeuPlano.AI API
+  version: 1.0.0
+  description: Documentação da API do app MeuPlano.AI.
+
+# Configuração dos servidores onde a API está hospedada. As variáveis de ambiente serão injetadas aqui para definição 
+servers:
+  - url: URL                  # será substituída pela variável de ambiente em /src/config/swagger
+    description: DESCRIPTION  # será substituída pela variável de ambiente em /src/config/swagger
+
+# Definição dos tags para organizar os endpoints da API
+tags:
+  - name: Planos de Aula
+  description: Endpoints relacionados à criação e gerenciamento de planos de Aula
+
+# Definição dos caminhos (endpoints) da API.
+# Cada caminho é referênciado a um arquivo YAML separado para melhor organização e manutenção d
+paths:
+  /planos-de-aula/rascunho:
+    $ref: './paths/planos-de-aula/gerar-rascunho.yaml'
