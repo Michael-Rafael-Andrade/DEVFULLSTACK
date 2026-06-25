@@ -6,18 +6,22 @@ info:
   version: 1.0.0
   description: Documentação da API do app MeuPlano.AI.
 
-# Configuração dos servidores onde a API está hospedada. As variáveis de ambiente serão injetadas aqui para definição 
+# Configuração dos servidores onde a API está hospedada. As variáveis de ambiente serão injetadas aqui para definir a URL e a descrição do servidor.
 servers:
-  - url: URL                  # será substituída pela variável de ambiente em /src/config/swagger
-    description: DESCRIPTION  # será substituída pela variável de ambiente em /src/config/swagger
+  - url: URL                  # será substituída pela variável de ambiente em /src/config/swagger.ts
+    description: DESCRIPTION  # será substituída pela variável de ambiente em /src/config/swagger.ts
 
 # Definição dos tags para organizar os endpoints da API
 tags:
   - name: Planos de Aula
-  description: Endpoints relacionados à criação e gerenciamento de planos de Aula
+    description: Endpoints relacionados à criação e gerenciamento de planos de aula
 
 # Definição dos caminhos (endpoints) da API.
-# Cada caminho é referênciado a um arquivo YAML separado para melhor organização e manutenção d
+# Cada caminho é referenciado a um arquivo YAML separado para melhor organização e manutenção da documentação.
 paths:
   /planos-de-aula/rascunho:
     $ref: './paths/planos-de-aula/gerar-rascunho.yaml'
+  /planos-de-aula/rascunho/melhorar:
+    $ref: './paths/planos-de-aula/melhorar-rascunho.yaml'
+  /planos-de-aula/final:
+    $ref: './paths/planos-de-aula/gerar-plano-final.yaml'
