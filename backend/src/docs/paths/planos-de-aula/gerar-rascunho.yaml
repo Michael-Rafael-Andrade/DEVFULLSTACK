@@ -1,0 +1,129 @@
+# Endpoint HTTP POST para criar um novo plano de aula
+post:
+  summary: Gera um rascunho de plano de aula
+  description: >
+    Recebe uma solicitação em linguagem natural enviada pelo professor e retorna
+    um rascunho estruturado de plano de aula com campos preenchidos
+    automaticamente para revisão posterior.
+  tags:
+    - Planos de Aula
+  operationId: gerarRascunhoPlanoDeAula
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - descricao
+          properties:
+            descricao:
+              type: string
+              minLength: 10
+              description: Descrição em linguagem natural do plano de aula desejado pelo professor.
+              example: Quero uma aula de 45 minutos sobre inteligência artificial para alunos do ensino médio.
+  responses:
+    '200':
+      description: Rascunho do plano de aula gerado com sucesso.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              sucesso:
+                type: boolean
+                example: true
+              mensagem:
+                type: string
+                example: Rascunho do plano de aula gerado com sucesso.
+              dados:
+                type: object
+                properties:
+                  titulo:
+                    type: string
+                    example: Introdução à Inteligência Artificial
+                  disciplina:
+                    type: string
+                    example: Informática
+                  curso:
+                    type: string
+                    description: Tipo ou modalidade do curso.
+                    example: Ensino Médio
+                  nivel:
+                    type: string
+                    description: Nível, série, ano ou período do curso.
+                    example: 1º ano
+                  duracao:
+                    type: string
+                    example: 45 minutos
+                  tema:
+                    type: string
+                    example: Inteligência Artificial
+                  objetivos:
+                    type: array
+                    items:
+                      type: string
+                    example:
+                      - Compreender o conceito de Inteligência Artificial.
+                      - Identificar aplicações de IA no cotidiano.
+                  conteudos:
+                    type: array
+                    items:
+                      type: string
+                    example:
+                      - Conceito de Inteligência Artificial
+                      - Exemplos de aplicações práticas
+                      - Impactos sociais da IA
+                  metodologia:
+                    type: string
+                    example: Aula expositiva dialogada com exemplos práticos e discussão orientada.
+                  recursos:
+                    type: array
+                    items:
+                      type: string
+                    example:
+                      - Projetor
+                      - Computador
+                      - Internet
+                  avaliacao:
+                    type: string
+                    example: Participação dos estudantes e produção de uma síntese individual.
+    '400':
+      description: Requisição inválida. A descrição do plano de aula é obrigatória ou insuficiente.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              sucesso:
+                type: boolean
+                example: false
+              mensagem:
+                type: string
+                example: A descrição deve ter pelo menos 10 caracteres.
+    '401':
+      description: Professor não autenticado.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              sucesso:
+                type: boolean
+                example: false
+              mensagem:
+                type: string
+                example: É necessário estar autenticado para gerar o plano de aula.
+    '500':
+      description: Erro interno do servidor.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              sucesso:
+                type: boolean
+                example: false
+              mensagem:
+                type: string
+                example: Ocorreu um erro interno ao gerar o rascunho do plano de aula.
