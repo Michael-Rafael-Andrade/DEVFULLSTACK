@@ -2,14 +2,17 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    "rootDir": "./src",  // pasta vai conter os arquivos fontes da app
+    "rootDir": "./",  // pasta vai conter os arquivos fontes da app
     "outDir": "./dist",  // vai converter os arquivos typescript para javascript e vai salvar dentro da pasta 'dist'
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "commonjs", // "module": "nodenext",
     "target": "es2025",  // "target": "esnext",    
-    "types": [],
+    "types": [
+      "node",
+      "vitest/globals"
+    ],
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -41,5 +44,5 @@
     // "moduleDetection": "force",
     // "skipLibCheck": true,
   },
-  "include": ["src"]
+  "include": ["src", "tests", "vitest.config.ts"]
 }
