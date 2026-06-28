@@ -1,0 +1,41 @@
+name: Backend CI/CD
+
+on: 
+    push:
+        branches:
+            - "*"
+
+    pull_request:
+        branches:
+            - "*"
+
+env:
+    NODE_VERSION: 22
+
+jobs:
+    backend:
+        name: Testar e build backend
+        runs-ons: ubuntu-latest
+        steps:
+            - name: Baixar código
+              uses: actions/checkout@v4
+
+            - name: Configurar Node.js
+              uses: actions/setup-node@v4
+              with:
+                node-version: ${{env.NODE_VERSION}}            
+                cache: npm
+                cache-dependency-path: ./backend/package-lock.json
+
+            - name: Instalar as dependências
+              working-directory: ./backend
+              run: npm ci
+
+            - name: Rodar os testes
+              working-directory: ./backend
+              run: npm run test 
+
+            - name: Rodar build
+              working-directory: ./backend
+              run: npm run build
+
