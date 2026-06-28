@@ -15,7 +15,7 @@ env:
 jobs:
     backend:
         name: Testar e build backend
-        runs-ons: ubuntu-latest
+        runs-on: ubuntu-latest
         steps:
             - name: Baixar código
               uses: actions/checkout@v4
