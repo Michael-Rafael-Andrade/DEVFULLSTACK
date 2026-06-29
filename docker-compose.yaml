@@ -1,62 +1,57 @@
-name: meuplanoai
+version: '3.8'
 
 services:
   backend-dev:
-    container_name: backend-dev
     build:
       context: ./backend
       dockerfile: Dockerfile
-      target: development
+    container_name: backend-dev
+    ports:
+      - "3333:3333"
+    environment:
+      - NODE_ENV=development
+      - PORT=3333
+      - AI_API_URL=https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
+      - AI_MODEL=gemini-2.0-flash
+      - AI_API_KEY=sua_chave_local_aqui
+      - MONGO_URL=mongodb://mongodb:27017/meuplanoai
+      - CORS_ORIGIN=http://localhost:5173
     volumes:
       - ./backend:/app
       - /app/node_modules
-    ports:
-      - "${BACKEND_PORT}:${BACKEND_PORT}"
-    env_file:
-      - ./backend/.env.development
+    depends_on:
+      - mongodb
+    networks:
+      - meuplanoai_net
 
-  backend-test:
-    container_name: backend-test
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-      target: test
-    env_file:
-      - ./backend/.env.development
-
-  ollama:
-    container_name: ollama
-    image: ollama/ollama:latest
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama_data:/root/.ollama
-
-  # Serviço do frontend (desenvolvimento)
   frontend-dev:
-    container_name: frontend-dev
     build:
       context: ./frontend
       dockerfile: Dockerfile
-      target: development
+    container_name: frontend-dev
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:3333
     volumes:
       - ./frontend:/app
-      - /app/node_modules                     # Evita apagar node_modules do container
-    ports:
-      - "${FRONTEND_PORT}:${FRONTEND_PORT}"   # variável a partir de ./.env (host:container)
-    environment:
-      - FRONTEND_PORT=${FRONTEND_PORT}        # porta usada pelo Vite dentro do container
-    env_file:
-      - ./frontend/.env.development           # injeta VITE_API_URL no ambiente
+      - /app/node_modules
+    networks:
+      - meuplanoai_net
 
-  frontend-test:
-    container_name: frontend-test
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      target: test
-    env_file:
-      - ./frontend/.env.development           # injeta variaveis dentro do ambiente
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - dados-do-mongo:/data/db
+    networks:
+      - meuplanoai_net
+
+networks:
+  meuplanoai_net:
+    driver: bridge
 
 volumes:
-  ollama_data: 
+  dados-do-mongo:
