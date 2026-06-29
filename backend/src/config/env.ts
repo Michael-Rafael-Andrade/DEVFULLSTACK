@@ -11,5 +11,6 @@ dotenv.config({
 export const config = {
     port: Number(process.env.PORT) ?? 3333,
     urlApi: `http://localhost:${process.env.PORT ?? 3333}`,
-    nodeEnv: env
+    nodeEnv: env,
+    corsOrigin: process.env.CORS_ORIGIN ?? '*',
 };
