@@ -1,4 +1,5 @@
 import { IaServico } from "../ia/ia.servico";
+import { PlanoDeAulaRepositorio } from "./plano-de-aula.repositorio";
 
 import {
     criarPromptGerarPlanoFinal,
@@ -51,9 +52,14 @@ const CAMPOS_OBRIGATORIOS_RASCUNHO: Array<keyof PlanoDeAulaRascunho> = [
 
 class PlanoDeAulaServico {
     /**
-    * Serviço genérico de comunicação com provedores de IA.
-    */
+     * Serviço genérico de comunicação com provedores de IA.
+     */
     private readonly iaServico: IaServico;
+
+    /**
+     * Repositório para persistência de dados no MongoDB.
+     */
+    private readonly repositorio: PlanoDeAulaRepositorio;
 
     /**
      * Cria uma nova instância do serviço de plano de aula.
@@ -63,6 +69,7 @@ class PlanoDeAulaServico {
      */
     constructor() {
         this.iaServico = new IaServico();
+        this.repositorio = new PlanoDeAulaRepositorio();
     }
 
     /**
@@ -152,6 +159,22 @@ class PlanoDeAulaServico {
         );
 
         this.validarPlanoFinal(planoFinal);
+
+        // PERSISTÊNCIA NÃO-FATAL NO MONGODB (Requisito da Atividade)
+        if (process.env.MONGO_URL) {
+            try {
+                // Passa os dados de acordo com a interface do repositório
+                await this.repositorio.salvar({
+                    titulo: planoFinal.titulo,
+                    plano: JSON.stringify(planoFinal.plano), 
+                    relatorio: planoFinal.relatorio
+                });
+                console.log("Plano de aula salvo com sucesso no banco de dados.");
+            } catch (erro: any) {
+                // Em caso de falha de banco de dados, registra o log sem disparar um erro
+                console.error("Aviso (não-fatal): Falha ao persistir dados no MongoDB:", erro.message);
+            }
+        }
 
         return planoFinal;
     }

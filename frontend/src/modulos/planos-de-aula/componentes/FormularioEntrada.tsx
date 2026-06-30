@@ -47,9 +47,11 @@ function FormularioEntrada({ onGerar, carregando, erro }: Props) {
     <form onSubmit={aoEnviar}>
       <h2>Descreva sua aula</h2>
 
-      <label htmlFor="descricao">Descrição do plano de aula</label>
+      <label htmlFor="input-descricao">
+        Descrição do plano de aula:
+      </label>
       <textarea
-        id="descricao"
+        id="input-descricao"
         rows={4}
         value={descricao}
         placeholder="Ex.: Quero uma aula de 50 minutos sobre introdução à engenharia de software para graduação."
