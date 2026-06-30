@@ -1,57 +1,51 @@
 version: '3.8'
 
 services:
-  backend-dev:
+  mongodb:
+    image: mongo:latest
+    container_name: meuplano_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - dados_mongo:/data/db
+    networks:
+      - rede_meuplano
+
+  backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: backend-dev
+    container_name: meuplano_backend
     ports:
       - "3333:3333"
     environment:
-      - NODE_ENV=development
       - PORT=3333
+      - MONGO_URL=mongodb://mongodb:27017/meuplano_ai
       - AI_API_URL=https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
       - AI_MODEL=gemini-2.0-flash
-      - AI_API_KEY=sua_chave_local_aqui
-      - MONGO_URL=mongodb://mongodb:27017/meuplanoai
-      - CORS_ORIGIN=http://localhost:5173
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
+      - AI_API_KEY=${AI_API_KEY}
     depends_on:
       - mongodb
     networks:
-      - meuplanoai_net
+      - rede_meuplano
 
-  frontend-dev:
+  frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: frontend-dev
+    container_name: meuplano_frontend
     ports:
       - "5173:5173"
     environment:
       - VITE_API_URL=http://localhost:3333
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+    depends_on:
+      - backend
     networks:
-      - meuplanoai_net
-
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
-    ports:
-      - "27017:27017"
-    volumes:
-      - dados-do-mongo:/data/db
-    networks:
-      - meuplanoai_net
-
-networks:
-  meuplanoai_net:
-    driver: bridge
+      - rede_meuplano
 
 volumes:
-  dados-do-mongo:
+  dados_mongo:
+
+networks:
+  rede_meuplano:
+    driver: bridge
